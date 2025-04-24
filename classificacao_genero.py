@@ -1,6 +1,6 @@
+#%% BIBLIOTECAS
 import pandas as pd
 from sklearn.neural_network import MLPClassifier
-from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import accuracy_score, confusion_matrix
 
@@ -26,40 +26,39 @@ X = encoder.fit_transform(X)
 print("Matriz de entradas codificadas:\n", X)
 input('Aperte uma tecla para continuar: \n')
 
-#%% DIVISÃO DOS DADOS EM TREINO E TESTE
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+#%% CONFIGURAÇÃO DA REDE NEURAL
+mlp = MLPClassifier(verbose=True, 
+                    max_iter=2000, 
+                    tol=1e-3, 
+                    activation='relu')
 
-#%% CONFIGURAÇÃO E TREINAMENTO DO MLP
-arquiteturas = [
-    (10,), (20,), (50,), (100,), (200,),  # Uma camada oculta
-    (10, 10), (20, 20), (50, 50)         # Duas camadas ocultas
-]
-funcoes_ativacao = ['relu', 'logistic']  # 'logistic' é equivalente a 'sigmoid'
-taxas_aprendizado = ['constant', 'adaptive']
+#%% TREINAMENTO DA REDE
+mlp.fit(X, y)  # Executa o treinamento
+print("\nTreinamento concluído!")
 
-for arquitetura in arquiteturas:
-    for func_ativacao in funcoes_ativacao:
-        for taxa_aprendizado in taxas_aprendizado:
-            print(f"\nArquitetura: {arquitetura}, Ativação: {func_ativacao}, Taxa: {taxa_aprendizado}")
-            
-            # Configurar o MLP
-            mlp = MLPClassifier(
-                hidden_layer_sizes=arquitetura,
-                activation=func_ativacao,
-                learning_rate=taxa_aprendizado,
-                max_iter=1000,
-                random_state=42,
-                verbose=False
-            )
-            
-            # Treinar o modelo
-            mlp.fit(X_train, y_train)
-            
-            # Avaliar o modelo
-            y_pred = mlp.predict(X_test)
-            acc = accuracy_score(y_test, y_pred)
-            cm = confusion_matrix(y_test, y_pred)
-            
-            print(f"Acurácia: {acc:.4f}")
-            print("Matriz de Confusão:")
-            print(cm)
+#%% TESTES
+print('\nTestando os casos de treinamento:')
+for caso, classe_real in zip(X, y):
+    classe_prevista = mlp.predict([caso])
+    print(f'Caso: {caso}, Real: {classe_real}, Previsto: {classe_prevista[0]}')
+
+#%% TESTE DE DADO "NÃO VISTO"
+novo_caso = [1, 13.5, 5.9, 0, 0, 0, 0]  # Exemplo de novo caso
+novo_caso_codificado = encoder.transform([novo_caso])
+print("\nNovo caso codificado:", novo_caso_codificado)
+
+# Previsão
+previsao = mlp.predict(novo_caso_codificado)
+print(f"Novo caso: {novo_caso} = {previsao[0]}")
+
+#%% ALGUNS PARÂMETROS DA REDE
+print("\nParâmetros da rede:")
+print("Classes = ", mlp.classes_)  # Lista de classes
+print("Erro = ", mlp.loss_)  # Fator de perda (erro)
+print("Amostras visitadas = ", mlp.t_)  # Número de amostras de treinamento visitadas
+print("Atributos de entrada = ", mlp.n_features_in_)  # Número de atributos de entrada
+print("N ciclos = ", mlp.n_iter_)  # Número de iterações no treinamento
+print("N de camadas = ", mlp.n_layers_)  # Número de camadas da rede
+print("Tamanhos das camadas ocultas: ", mlp.hidden_layer_sizes)
+print("N de neurônios de saída = ", mlp.n_outputs_)  # Número de neurônios de saída
+print("Função de ativação = ", mlp.out_activation_)  # Função de ativação utilizada
