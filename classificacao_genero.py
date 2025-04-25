@@ -38,10 +38,9 @@ input('Aperte uma tecla para continuar: \n')
 
 #%% CONFIGURAÇÃO DA REDE (VÁRIOS TESTES COM PARÂMETROS DIFERENTES)
 # a) Arquitetura da rede
-
 # a1) Teste com uma camada oculta com 10, 20, 50, 100, 200 neurônios
 # b) Função de ativação 'relu' ou 'sigmoid'
-# Teste com 'sigmoid' (descomente para testar)
+# Teste com 'sigmoid'- logistic (descomente para testar)
 # c) Número de ciclos ou épocas (max_iter)
 # Teste com max_iter = 1000, 2000, 3000
 # Descomente uma das opções para testar
@@ -49,93 +48,24 @@ input('Aperte uma tecla para continuar: \n')
 # Teste com 'constant' ou 'adaptive'
 # Descomente para testar o 'constant'
 
-# Descomente uma das opções abaixo para testar a rede com diferentes números de neurônios na camada oculta
+# mlp = MLPClassifier(
+#     hidden_layer_sizes=(200), 
+#     activation='logistic', 
+#     learning_rate='adaptive', 
+#     max_iter=1000,
+#     tol=1e-3,
+#     verbose=True
+# )
 
 mlp = MLPClassifier(
-    hidden_layer_sizes=(10,), 
-    activation='relu', 
+    hidden_layer_sizes=(50, 50), 
+    activation='logistic', 
     learning_rate='adaptive', 
     max_iter=1000,
     tol=1e-3,
     verbose=True
 )
 
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(20,), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(50,), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(100,), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(200,), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-
-# a2) Teste com duas camadas ocultas, 10+10, 20+20, 50+50 neurônios
-# Descomente uma das opções abaixo para testar a rede com duas camadas ocultas
-# b) Função de ativação 'relu' ou 'sigmoid'
-# Teste com 'sigmoid' (descomente para testar)
-# c) Número de ciclos ou épocas (max_iter)
-# Teste com max_iter = 1000, 2000, 3000
-# Descomente uma das opções para testar
-
-# d) Taxa de aprendizado
-# Teste com 'constant' ou 'adaptive'
-# Descomente para testar o 'constant'
-
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(10, 10), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(20, 20), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
-
-# mlp = MLPClassifier(
-#     hidden_layer_sizes=(50, 50), 
-#     activation='relu', 
-#     learning_rate='adaptive', 
-#     max_iter=2000,
-#     tol=1e-3,
-#     verbose=True
-# )
 
 
 # e) Matriz de confusão para cada rodada
@@ -146,12 +76,13 @@ print("\nTreinamento concluído!")
 #%% TESTES NO CONJUNTO DE TESTE
 y_pred = mlp.predict(X_test)
 print("\nPrevisões no conjunto de teste:")
-print("Acurácia:", accuracy_score(y_test, y_pred))
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Acurácia: {accuracy:.4f}")
 print("Matriz de confusão:\n", confusion_matrix(y_test, y_pred))
 
 #%% TESTE COM DADO NÃO VISTO (EXEMPLO NOVO)
 # Descomente para testar um novo caso
-novo_caso = [1, 13.5, 5.9, 0, 1, 1, 1]  # Exemplo com dados hipotéticos
+novo_caso = [1, 13.5, 5.9, 0, 1, 1, 1]  
 novo_caso_codificado = encoder.transform([novo_caso])
 print("\nNovo caso codificado:", novo_caso_codificado)
 previsao = mlp.predict(novo_caso_codificado)
